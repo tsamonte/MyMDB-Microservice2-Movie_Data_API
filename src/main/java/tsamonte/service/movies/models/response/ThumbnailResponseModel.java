@@ -3,7 +3,7 @@ package tsamonte.service.movies.models.response;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import tsamonte.service.movies.base.Result;
-import tsamonte.service.movies.database.model.ThumbnailModel;
+import tsamonte.service.movies.database.model.movie.ThumbnailModel;
 
 /**
  * The class ThumbnailResponseModel will be utilized by the following endpoints:

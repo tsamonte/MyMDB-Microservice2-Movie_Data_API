@@ -1,4 +1,4 @@
-package tsamonte.service.movies.database.model;
+package tsamonte.service.movies.database.model.movie;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -34,8 +34,18 @@ public class ThumbnailModel {
         this.poster_path = poster_path;
     }
 
-    // TODO: add constructor that accepts a full MovieModel object that models the movie table in the db
-//    public ThumbnailModel(MovieModel MovieModel) {}
+    /**
+     * Instead of taking fields directly, this constructor will take an entire MovieModel object, which models
+     * the movie table of the database. This constructor will extract the necessary thumbnail fields
+     *
+     * @param movieModel Object modeling an entire row of the movie table in the database
+     */
+    public ThumbnailModel(MovieModel movieModel) {
+        this.movie_id = movieModel.getMovie_id();
+        this.title = movieModel.getTitle();
+        this.backdrop_path = movieModel.getBackdrop_path();
+        this.poster_path = movieModel.getPoster_path();
+    }
 
     @JsonProperty(value = "movie_id")
     public String getMovie_id() {
