@@ -89,7 +89,7 @@ public class MovieModel {
     // TODO: when creating db access functions, create one that retrieves a director's name using a person_id; and call here
     /**
      * Retrieves the director's name based on this MovieModel's director_id
-     * @return
+     * @return director's name retrieved from database
      */
     public String getDirector() {
         return "";

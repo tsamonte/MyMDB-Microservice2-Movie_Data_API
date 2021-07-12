@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Relevant endpoints:
  *  - /api/movies/search
  *  - /api/movies/browse/{phrase}
+ *  - /api/movies/people
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SearchBrowseModel {
