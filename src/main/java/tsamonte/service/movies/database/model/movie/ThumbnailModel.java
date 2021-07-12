@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Class ThumbnailModel models a portion of the movie table in the database.
  * This class will be used when retrieving a movie's movie id, title, backdrop path, and poster path.
  * All of these fields will be necessary for retrieving thumbnails only.
+ *
+ * Relevant endpoints:
+ *  - api/movies/thumbnail
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThumbnailModel {
