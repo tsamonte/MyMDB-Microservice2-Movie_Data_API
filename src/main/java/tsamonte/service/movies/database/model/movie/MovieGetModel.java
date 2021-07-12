@@ -1,8 +1,18 @@
 package tsamonte.service.movies.database.model.movie;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class MovieGetModel models the structure of the movie table in the database, except all foreign keys are replaced with the relevant
+ * information from its respective table. There are also two additional fields: genres and people.
+ * All of these fields will be necessary when retrieving a single movie's details.
+ *
+ * Relevant endpoints:
+ *  - /api/movies/get/{movie_id}
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovieGetModel {
     @JsonProperty(value = "movie_id", required = true)
     private String movie_id;
