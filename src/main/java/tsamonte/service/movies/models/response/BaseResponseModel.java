@@ -7,6 +7,7 @@ import tsamonte.service.movies.base.Result;
 import tsamonte.service.movies.logger.ServiceLogger;
 
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 
 /**
  * The class BaseResponseModel contains all common components of every API response.
@@ -55,5 +56,19 @@ public class BaseResponseModel {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 
         return Response.status(result.getStatus()).entity(this).build();
+    }
+
+    @JsonIgnore
+    public Response buildResponse(HashMap<String, String> headers) {
+        ServiceLogger.LOGGER.info("Response being build with Result: " + result);
+
+        if (result == null || result.getStatus() == Response.Status.INTERNAL_SERVER_ERROR)
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+
+        Response.ResponseBuilder builder = Response.status(result.getStatus()).entity(this);
+        for(String headerName : headers.keySet()) {
+            builder.header(headerName, headers.get(headerName));
+        }
+        return builder.build();
     }
 }
