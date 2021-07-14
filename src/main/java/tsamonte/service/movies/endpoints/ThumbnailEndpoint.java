@@ -22,6 +22,11 @@ import java.util.HashMap;
 /**
  * POST /api/movies/thumbnail
  *
+ * Request Header Fields:
+ *      - email
+ *      - session_id
+ *      -transaction_id
+ *
  * Request Model:
  *      - movie_ids(String[], required)
  *
