@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *      - /api/movies/thumbnail
  *
  * Request Model:
- *      - movie_ids(String[], required
+ *      - movie_ids(String[], required)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ThumbnailRequestModel {
