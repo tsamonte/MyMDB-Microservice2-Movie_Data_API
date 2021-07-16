@@ -19,6 +19,38 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 
+/**
+ * POST /api/movies/search
+ *
+ * Request Header Fields:
+ *      - email
+ *      - session_id
+ *      - transaction_id
+ *
+ * Request Query Fields:
+ *      - title (String, optional)
+ *      - year (int, optional)
+ *      - director (String, optional)
+ *      - genre (String, optional)
+ *      - hidden (boolean, optional)
+ *      - limit (int ,optional): number or results displayed; 10 (default), 25, 50, or 100
+ *      - offset (int, optional): for result pagination; 0 (default) or positive multiple of limit
+ *      - orderBy (String, optional): sorting parameter; "title" (default), "rating", or "year"
+ *      - direction (String, optional): sorting direction; "asc" (default) or "desc"
+ *
+ * Response Model:
+ *      - resultCode (int, required)
+ *      - message (String, required)
+ *      - movies (SearchBrowseModel[], required)
+ *          - movie_id (String, required)
+ *          - title (String, required)
+ *          - year (int, required)
+ *          - director (String, required)
+ *          - rating (float, required)
+ *          - backdrop_path (String, optional)
+ *          - poster_path (String, optional)
+ *          - hidden (boolean, optional)
+ */
 @Path("search")
 public class SearchEndpoint {
     @GET
