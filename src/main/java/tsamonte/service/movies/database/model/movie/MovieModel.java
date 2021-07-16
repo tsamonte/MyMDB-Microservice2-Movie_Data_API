@@ -1,5 +1,7 @@
 package tsamonte.service.movies.database.model.movie;
 
+import tsamonte.service.movies.database.access.PersonRecords;
+
 /**
  * Class MovieModel models the structure of the movie table in the database.
  * This class will be used when retrieving entire rows from the database.
@@ -86,12 +88,11 @@ public class MovieModel {
         return hidden;
     }
 
-    // TODO: when creating db access functions, create one that retrieves a director's name using a person_id; and call here
     /**
      * Retrieves the director's name based on this MovieModel's director_id
      * @return director's name retrieved from database
      */
     public String getDirector() {
-        return "";
+        return PersonRecords.retrieveDirectorName(this.director_id);
     }
 }
