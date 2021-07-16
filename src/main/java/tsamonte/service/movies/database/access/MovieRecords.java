@@ -2,8 +2,10 @@ package tsamonte.service.movies.database.access;
 
 import tsamonte.service.movies.MoviesService;
 import tsamonte.service.movies.database.model.movie.MovieModel;
+import tsamonte.service.movies.database.model.movie.SearchBrowseModel;
 import tsamonte.service.movies.database.model.movie.ThumbnailModel;
 import tsamonte.service.movies.logger.ServiceLogger;
+import tsamonte.service.movies.models.queryparameter.MovieSearchQueryModel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +13,116 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MovieRecords {
+    // ================================================/API/MOVIES/SEARCH================================================
+    /**
+     * Builds a MySQL query that will be passed into a prepared statement. WHERE conditions of the query will be added based
+     * on what is passed in through the queryModel parameter
+     *
+     * Related endpoints :
+     *      - /api/movies/search
+     *
+     * @param queryModel An object containing info about the passed in query parameters
+     * @return A string representing a SQL statement before being passed into a PreparedStatement.
+     */
+    private static String buildQuery(MovieSearchQueryModel queryModel) {
+        String SELECT = "SELECT DISTINCT m.movie_id, m.title, m.year, p.name, m.rating, m.backdrop_path, m.poster_path, m.hidden";
+        String FROM = " FROM movie AS m INNER JOIN person AS p ON m.director_id = p.person_id" +
+                " INNER JOIN genre_in_movie AS gim ON m.movie_id = gim.movie_id" +
+                " INNER JOIN genre AS g on g.genre_id = gim.genre_id";
+        String WHERE = " WHERE 1=1";
+        String ORDERBY = " ORDER BY " + queryModel.getOrderBy() + " " + queryModel.getDirection();
+        String LIMIT = " LIMIT " + queryModel.getLimit() + " OFFSET " + queryModel.getOffset();
+
+        if(queryModel.getTitle() != null)       WHERE += " AND m.title LIKE ?";
+        if(queryModel.getYear() != null)        WHERE += " AND m.year = ?";
+        if(queryModel.getDirector() != null)    WHERE += " AND p.name LIKE ?";
+        if(queryModel.getGenre() != null)       WHERE += " AND g.name LIKE ?";
+
+        // If query param says not to show hidden, then regardless of plevel, only show rows where m.hidden = false
+        if(queryModel.showHidden() == null || !queryModel.showHidden()) WHERE += " AND hidden = FALSE";
+
+        // Secondary sort
+        if(queryModel.getOrderBy().equals("title") || queryModel.getOrderBy().equals("year")) ORDERBY += ", rating DESC";
+        else if(queryModel.getOrderBy().equals("rating")) ORDERBY += ", title ASC";
+
+        return SELECT + FROM + WHERE + ORDERBY + LIMIT;
+    }
+
+    /**
+     * Prepares the query to be called and returns the ResultSet retrieved from the database. Returned ResultSet can be null.
+     *
+     * Related endpoints :
+     *      - /api/movies/search
+     *
+     * @param queryModel An object containing info about the passed in query parameters
+     * @return ResultSet containing data retreived from the database. Can be null.
+     */
+    private static ResultSet getResult(MovieSearchQueryModel queryModel) {
+        try {
+            String query = buildQuery(queryModel);
+            PreparedStatement ps = MoviesService.getCon().prepareStatement(query);
+
+            int psIndex = 1;
+            if(queryModel.getTitle() != null) {
+                ps.setString(psIndex, "%" + queryModel.getTitle() + "%");
+                psIndex++;
+            }
+            if(queryModel.getYear() != null) {
+                ps.setInt(psIndex, queryModel.getYear());
+                psIndex++;
+            }
+            if(queryModel.getDirector() != null) {
+                ps.setString(psIndex, "%" + queryModel.getDirector() + "%");
+                psIndex++;
+            }
+            if(queryModel.getGenre() != null) {
+                ps.setString(psIndex, "%" + queryModel.getGenre() + "%");
+                psIndex++;
+            }
+
+            ServiceLogger.LOGGER.info("Trying query: " + ps.toString());
+            ResultSet rs = ps.executeQuery();
+            ServiceLogger.LOGGER.info("Query succeeded.");
+
+            return rs;
+        }
+        catch (SQLException e) {
+            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve movie records.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static SearchBrowseModel[] retrieve(MovieSearchQueryModel queryModel) {
+        try {
+            ArrayList<SearchBrowseModel> results = new ArrayList<SearchBrowseModel>();
+            ResultSet rs = getResult(queryModel);
+
+            if(rs != null) {
+                while (rs.next()) {
+                    results.add(new SearchBrowseModel(rs.getString("movie_id"),
+                            rs.getString("title"),
+                            rs.getInt("year"),
+                            rs.getString("name"),
+                            rs.getFloat("rating"),
+                            rs.getString("backdrop_path"),
+                            rs.getString("poster_path"),
+                            queryModel.showHidden() == null || !queryModel.showHidden() ? null : rs.getBoolean("hidden")
+                    ));
+                }
+            }
+
+            SearchBrowseModel[] resultsToArray = new SearchBrowseModel[results.size()];
+            resultsToArray = results.toArray(resultsToArray);
+            return resultsToArray;
+        }
+        catch (SQLException e) {
+            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve movie records.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static MovieModel retrieve(String movie_id) {
         try {
             MovieModel result = null;
