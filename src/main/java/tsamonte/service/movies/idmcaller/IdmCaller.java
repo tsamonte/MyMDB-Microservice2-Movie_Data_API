@@ -11,6 +11,14 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 
 public class IdmCaller {
+    /**
+     * Makes a post request to another service.
+     *
+     * @param servicePath The path of the other service (i.e. "http://hostname:port/api/idm")
+     * @param endpointPath The path of the endpoint being called (i.e. "/privilege")
+     * @param requestModel An object modeling the request json sent to the endpoint
+     * @return An object modeling the response json received from the endpoint
+     */
     private static PrivilegeResponseModel makePost(String servicePath, String endpointPath, PrivilegeRequestModel requestModel) {
         PrivilegeResponseModel responseModel = null;
 
@@ -47,6 +55,13 @@ public class IdmCaller {
         return responseModel;
     }
 
+    /**
+     * Makes a post request to the Identity Management API privilege endpoint:
+     *  - /api/idm/privilege
+     *
+     * @param email The email address of the user making the request
+     * @return An object modeling the response json received from the privilege endpoint
+     */
     public static PrivilegeResponseModel callIDMPrivilege(String email) {
         String servicePath = MoviesService.getIdmConfigs().getScheme() + MoviesService.getIdmConfigs().getHostName() + ":" + MoviesService.getIdmConfigs().getPort() + MoviesService.getIdmConfigs().getPath();
         String endpointPath = MoviesService.getIdmConfigs().getPrivilegePath();
