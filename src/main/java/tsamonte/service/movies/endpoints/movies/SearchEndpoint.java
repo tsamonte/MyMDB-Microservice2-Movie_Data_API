@@ -78,7 +78,7 @@ public class SearchEndpoint {
             SearchBrowseModel[] movies = MovieRecords.retrieve(queryModel);
 
             // resultCode = 210; 200 OK; "Found movie(s) with search parameters."
-            if(movies != null) {
+            if(movies != null && movies.length > 0) {
                 responseModel = new SearchBrowseResponseModel(Result.MOVIES_FOUND, movies);
             }
             // resultCode = 211; 200 OK; "No movies found with search parameters."
