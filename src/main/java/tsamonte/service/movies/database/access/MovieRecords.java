@@ -1,9 +1,7 @@
 package tsamonte.service.movies.database.access;
 
 import tsamonte.service.movies.MoviesService;
-import tsamonte.service.movies.database.model.movie.MovieModel;
-import tsamonte.service.movies.database.model.movie.SearchBrowseModel;
-import tsamonte.service.movies.database.model.movie.ThumbnailModel;
+import tsamonte.service.movies.database.model.movie.*;
 import tsamonte.service.movies.logger.ServiceLogger;
 import tsamonte.service.movies.models.queryparameter.MovieBrowseQueryModel;
 import tsamonte.service.movies.models.queryparameter.MovieSearchQueryModel;
@@ -13,6 +11,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Database functions pertaining mostly to the movie table in the database
+ */
 public class MovieRecords {
     // ================================================/API/MOVIES/SEARCH================================================
     /**
@@ -78,7 +79,6 @@ public class MovieRecords {
             }
             if(queryModel.getGenre() != null) {
                 ps.setString(psIndex, "%" + queryModel.getGenre() + "%");
-                psIndex++;
             }
 
             ServiceLogger.LOGGER.info("Trying query: " + ps.toString());
@@ -154,7 +154,7 @@ public class MovieRecords {
         String LIMIT = " LIMIT " + queryModel.getLimit() + " OFFSET " + queryModel.getOffset();
 
         // Add keywords to database query
-        if(queryModel.getKeywords() != null || !queryModel.getKeywords().isEmpty()) {
+        if(queryModel.getKeywords() != null && !queryModel.getKeywords().isEmpty()) {
             for(int i = 0; i < queryModel.getKeywords().size(); i++) {
                 FROM += String.format(" INNER JOIN keyword_in_movie AS kim%d ON m.movie_id = kim%d.movie_id", i, i);
                 FROM += String.format(" INNER JOIN keyword AS k%d ON k%d.keyword_id = kim%d.keyword_id", i, i, i);
@@ -247,14 +247,86 @@ public class MovieRecords {
     }
 
     // ================================================/API/MOVIES/GET/{MOVIE_ID}================================================
+    /**
+     * Retrieves extensive data about a specified movie from the database and extracts the necessary fields, based on
+     * the passed in movie_id
+     *
+     * Related endpoints :
+     *      - /api/movies/get/{movie_id}
+     *
+     * @param movie_id A string representing a movie's unique id
+     * @return An object representing data about a specified movie
+     */
+    public static MovieGetModel retrieveAllMovieData(String movie_id) {
+        MovieGetModel result = null;
+        MovieModel movieInfo = retrieve(movie_id);
 
+        // if the movie isn't found through its id, we don't bother looking through other tables using the same movie_id
+        if(movieInfo != null) {
+            GenreModel[] genreInfo = GenreRecords.retrieveMany(movie_id);
+            PersonNameModel[] peopleInfo = PersonRecords.retrieveMany(movie_id);
+            result = new MovieGetModel(movieInfo, genreInfo, peopleInfo);
+        }
+
+        return result;
+    }
     // ================================================/API/MOVIES/THUMBNAIL================================================
+    /**
+     * Retrieves movies from the database and extracts the necessary data needed for the thumbnail endpoint
+     *
+     * Related endpoints :
+     *      - /api/movies/thumbnail
+     *
+     * @param movie_ids An array of movie ids to retrieve from database
+     * @return Array of objects that contain information needed for the Thumbnail endpoint response
+     */
+    public static ThumbnailModel[] retrieveThumbnails(String[] movie_ids) {
+        MovieModel[] movies = retrieveMany(movie_ids);
+        ThumbnailModel[] results = null;
+
+        if(movies != null) {
+            results = new ThumbnailModel[movies.length];
+            for (int i = 0; i < movies.length; i++) {
+                results[i] = new ThumbnailModel(movies[i]);
+            }
+        }
+        return results;
+    }
+    // ================================================COMMON FUNCTIONS================================================
+    /**
+     * Builds a query that will be passed into a prepared statement. Depending on the passed in length, the "WHERE" clause
+     * of the SQL statement will have more conditions added.
+     *
+     * To be used with MovieRecords.retrieveMany(String[] movie_ids)
+     *
+     * @param length The length of the movie_ids array passed into the retrieveMany function
+     * @return A string representing a SQL query
+     */
+    private static String buildQuery(int length) {
+        String query = "SELECT *" +
+                " FROM movie" +
+                " WHERE";
+        if (length == 0) {
+            query += " 1=1";
+        } else {
+            for (int i = 0; i < length; i++) {
+                if (i != 0) {
+                    query += " OR movie_id = ?";
+                } else {
+                    query += " movie_id = ?";
+                }
+            }
+        }
+
+        return query;
+    }
+
     public static MovieModel retrieve(String movie_id) {
         try {
             MovieModel result = null;
 
             String query = "SELECT *" +
-                    " FROM movies" +
+                    " FROM movie" +
                     " WHERE movie_id = ?";
             PreparedStatement ps = MoviesService.getCon().prepareStatement(query);
             ps.setString(1, movie_id);
@@ -325,53 +397,5 @@ public class MovieRecords {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Builds a query that will be passed into a prepared statement. Depending on the passed in length, the "WHERE" clause
-     * of the SQL statement will have more conditions added.
-     *
-     * To be used with MovieRecords.retrieveMany(String[] movie_ids)
-     *
-     * @param length The length of the movie_ids array passed into the retrieveMany function
-     * @return A string representing a SQL query
-     */
-    private static String buildQuery(int length) {
-        String query = "SELECT *" +
-                " FROM movie" +
-                " WHERE";
-        if (length == 0) {
-            query += " 1=1";
-        } else {
-            for (int i = 0; i < length; i++) {
-                if (i != 0) {
-                    query += " OR movie_id = ?";
-                } else {
-                    query += " movie_id = ?";
-                }
-            }
-        }
-
-        return query;
-    }
-
-    /**
-     * Retrieves movies from the database and extracts the necessary data needed for the endpoint at path:
-     * /api/movies/thumbnail
-     *
-     * @param movie_ids An array of movie ids to retrieve from database
-     * @return Array of objects that contain information needed for the Thumbnail endpoint response
-     */
-    public static ThumbnailModel[] retrieveThumbnails(String[] movie_ids) {
-        MovieModel[] movies = retrieveMany(movie_ids);
-        ThumbnailModel[] results = null;
-
-        if(movies != null) {
-            results = new ThumbnailModel[movies.length];
-            for (int i = 0; i < movies.length; i++) {
-                results[i] = new ThumbnailModel(movies[i]);
-            }
-        }
-        return results;
     }
 }
