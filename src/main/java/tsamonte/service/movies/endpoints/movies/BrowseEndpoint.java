@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * POST /api/movies/browse/{phrase}
+ * GET /api/movies/browse/{phrase}
  *
  * Request Header Fields:
  *      - email

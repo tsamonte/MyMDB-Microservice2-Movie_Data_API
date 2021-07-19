@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 
 /**
- * POST /api/movies/search
+ * GET /api/movies/search
  *
  * Request Header Fields:
  *      - email

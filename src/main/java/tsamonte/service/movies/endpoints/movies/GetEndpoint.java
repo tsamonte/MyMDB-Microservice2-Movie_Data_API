@@ -7,7 +7,6 @@ import tsamonte.service.movies.idmcaller.IdmCaller;
 import tsamonte.service.movies.idmcaller.PrivilegeResponseModel;
 import tsamonte.service.movies.logger.ServiceLogger;
 import tsamonte.service.movies.models.response.movies.MovieGetResponseModel;
-import tsamonte.service.movies.models.response.movies.SearchBrowseResponseModel;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,7 +19,7 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 
 /**
- * POST /api/movies/get/{movie_id}
+ * GET /api/movies/get/{movie_id}
  *
  * Request Header Fields:
  *      - email
