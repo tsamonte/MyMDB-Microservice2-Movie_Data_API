@@ -13,6 +13,9 @@ import java.util.ArrayList;
  * Database functions pertaining to the person table in the database
  */
 public class PersonRecords {
+
+
+    // ================================================COMMON FUNCTIONS================================================
     /**
      * Retrieves all people associated to a movie using the movie's movie_id
      *
