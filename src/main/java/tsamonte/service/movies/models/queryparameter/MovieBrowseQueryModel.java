@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Query models will hold information about any accepted query parameters. There are no required query parameters.
  * For fields with limited valid choices, any invalid data passed will cause the default data to be used instead
  *
- * The class MovieSearchQueryModel will be utilized by the following endpoints:
+ * The class MovieBrowseQueryModel will be utilized by the following endpoints:
  *      - /api/movies/browse/{phrase}
  *
  * Path Parameter Fields:
