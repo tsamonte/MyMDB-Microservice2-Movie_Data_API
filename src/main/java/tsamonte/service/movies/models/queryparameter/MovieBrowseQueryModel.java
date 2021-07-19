@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class MovieBrowseQueryModel extends CommonQueryParameters {
     private ArrayList<String> keywords;
-    private Boolean hidden; // recall: if user has insuffient privilege, hidden movies should not be shown. Keep track of this here.
+    private Boolean hidden; // recall: if user has insufficient privilege, hidden movies should not be shown. Keep track of this here.
 
     public MovieBrowseQueryModel(ArrayList<String> keywords,
                                  Integer limit, Integer offset, String orderBy, String direction,
