@@ -2,7 +2,9 @@ package tsamonte.service.movies.database.access;
 
 import tsamonte.service.movies.MoviesService;
 import tsamonte.service.movies.database.model.movie.PersonNameModel;
+import tsamonte.service.movies.database.model.person.PeopleGetModel;
 import tsamonte.service.movies.database.model.person.PeopleSearchModel;
+import tsamonte.service.movies.database.model.person.PersonModel;
 import tsamonte.service.movies.logger.ServiceLogger;
 import tsamonte.service.movies.models.queryparameter.PeopleSearchQueryModel;
 
@@ -83,7 +85,7 @@ public class PersonRecords {
             return rs;
         }
         catch (SQLException e) {
-            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve movie records.");
+            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve person records.");
             e.printStackTrace();
             return null;
         }
@@ -122,12 +124,79 @@ public class PersonRecords {
             return resultsToArray;
         }
         catch (SQLException e) {
-            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve movie records.");
+            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve person records.");
             e.printStackTrace();
             return null;
         }
     }
+
+    // ================================================/API/MOVIES/PEOPLE/GET/{PERSON_ID}================================================
+    /**
+     * Retrieves extensive data about a specified person from the database and extracts the necessary fields, based on
+     * the passed in person_id
+     *
+     * Related endpoints :
+     *      - /api/movies/people/get/{person_id}
+     *
+     * @param person_id An int representing a person's unique id
+     * @return An object representing data about a specified person
+     */
+    public static PeopleGetModel retrieveAllPersonData(int person_id) {
+        PeopleGetModel result = null;
+        PersonModel personModel = retrieve(person_id);
+
+        if(personModel != null) {
+            result = new PeopleGetModel(personModel);
+        }
+
+        return result;
+    }
+
     // ================================================COMMON FUNCTIONS================================================
+
+    /**
+     * Retrieves an entire row from the person table using an entry's unique person_id
+     *
+     * @param person_id A person's person id
+     * @return An object representing an entire row in the person table in the database
+     */
+    private static PersonModel retrieve(int person_id) {
+        try {
+            PersonModel result = null;
+
+            String query = "SELECT *" +
+                    " FROM person" +
+                    " WHERE person_id = ?";
+            PreparedStatement ps = MoviesService.getCon().prepareStatement(query);
+            ps.setInt(1, person_id);
+
+            ServiceLogger.LOGGER.info("Trying query: " + ps.toString());
+            ResultSet rs = ps.executeQuery();
+            ServiceLogger.LOGGER.info("Query succeeded.");
+
+            while(rs.next()) {
+                result = new PersonModel(
+                        rs.getInt("person_id"),
+                        rs.getString("name"),
+                        rs.getInt("gender_id"),
+                        rs.getString("birthday"),
+                        rs.getString("deathday"),
+                        rs.getString("biography"),
+                        rs.getString("birthplace"),
+                        rs.getFloat("popularity"),
+                        rs.getString("profile_path")
+                );
+            }
+
+            return result; // remove later
+        }
+        catch (SQLException e) {
+            ServiceLogger.LOGGER.warning("Query failed: Unable to retrieve person records.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * Retrieves all people associated to a movie using the movie's movie_id
      *
