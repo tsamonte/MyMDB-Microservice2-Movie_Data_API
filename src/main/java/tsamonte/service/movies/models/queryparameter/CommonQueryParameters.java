@@ -39,6 +39,8 @@ public class CommonQueryParameters {
 
     public String getDirection() { return direction; }
 
+    public void setOrderBy(String orderBy) { this.orderBy = orderBy; }
+
     /**
      * The following four functions check if their respective field is valid
      *
@@ -53,7 +55,6 @@ public class CommonQueryParameters {
     }
 
     private boolean orderByIsValid(String passedOrderBy) {
-        passedOrderBy.toLowerCase();
         return passedOrderBy.equalsIgnoreCase("title") || passedOrderBy.equalsIgnoreCase("rating") || passedOrderBy.equalsIgnoreCase("year");
     }
 

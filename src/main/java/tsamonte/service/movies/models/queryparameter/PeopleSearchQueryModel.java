@@ -24,6 +24,9 @@ public class PeopleSearchQueryModel extends CommonQueryParameters {
     public PeopleSearchQueryModel(String name, String birthday, String movie_title,
                                   Integer limit, Integer offset, String orderBy, String direction) {
         super(limit, offset, orderBy, direction);
+        if(orderBy == null) this.setOrderBy("name");
+        if(orderByIsValid(orderBy)) this.setOrderBy(orderBy);
+
         this.name = name;
         this.birthday = birthday;
         this.movie_title = movie_title;
@@ -34,4 +37,8 @@ public class PeopleSearchQueryModel extends CommonQueryParameters {
     public String getBirthday() { return birthday; }
 
     public String getMovie_title() { return movie_title; }
+
+    private boolean orderByIsValid(String passedOrderBy) {
+        return passedOrderBy.equalsIgnoreCase("name") || passedOrderBy.equalsIgnoreCase("birthday") || passedOrderBy.equalsIgnoreCase("popularity");
+    }
 }
