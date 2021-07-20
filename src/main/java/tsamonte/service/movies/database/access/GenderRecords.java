@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * Database functions pertaining to the gender table in the database
  */
 public class GenderRecords {
-    public static String retrieve(int gender_id) {
+    public static String retrieve(Integer gender_id) {
         if(gender_id < 0 || gender_id > 2) gender_id = 0;
         try {
             String query = "SELECT gender_name" +
