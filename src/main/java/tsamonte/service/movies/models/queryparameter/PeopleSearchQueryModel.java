@@ -13,7 +13,7 @@ package tsamonte.service.movies.models.queryparameter;
  *      - movie_title (String, optional): movie person is in
  *      - limit (int ,optional): number or results displayed; 10 (default), 25, 50, or 100
  *      - offset (int, optional): for result pagination; 0 (default) or positive multiple of limit
- *      - orderBy (String, optional): sorting parameter; "title" (default), "rating", or "year"
+ *      - orderBy (String, optional): sorting parameter; "name" (default), "birthday", or "popularity"
  *      - direction (String, optional): sorting direction; "asc" (default) or "desc"
  */
 public class PeopleSearchQueryModel extends CommonQueryParameters {
