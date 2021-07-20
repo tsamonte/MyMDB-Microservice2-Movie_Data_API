@@ -1,5 +1,7 @@
 package tsamonte.service.movies.database.model.person;
 
+import tsamonte.service.movies.database.access.GenderRecords;
+
 /**
  * Class PersonModel models the structure of the person table in the database.
  * This class will be used when retrieving entire rows from the database.
@@ -68,12 +70,11 @@ public class PersonModel {
         return profile_path;
     }
 
-    // TODO: when creating db access functions, create one that retrieves a gender's name using a gender_id; and call here
     /**
      * Retrieves the director's name based on this MovieModel's director_id
      * @return director's name retrieved from database
      */
     public String getGender() {
-        return "";
+        return GenderRecords.retrieve(this.gender_id);
     }
 }
