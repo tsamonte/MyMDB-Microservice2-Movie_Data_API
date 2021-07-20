@@ -25,7 +25,9 @@ public class PeopleSearchQueryModel extends CommonQueryParameters {
                                   Integer limit, Integer offset, String orderBy, String direction) {
         super(limit, offset, orderBy, direction);
         if(orderBy == null) this.setOrderBy("name");
-        if(orderByIsValid(orderBy)) this.setOrderBy(orderBy);
+        else {
+            if(orderByIsValid(orderBy)) this.setOrderBy(orderBy);
+        }
 
         this.name = name;
         this.birthday = birthday;
