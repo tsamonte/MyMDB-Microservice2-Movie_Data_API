@@ -1,4 +1,4 @@
-package tsamonte.service.movies.endpoints;
+package tsamonte.service.movies.endpoints.movies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import tsamonte.service.movies.base.Result;
