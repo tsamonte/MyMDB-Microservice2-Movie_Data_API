@@ -13,18 +13,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *  - /api/movies/people/get/{person_id}
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PeopleGetModel {
-    @JsonProperty(value = "person_id", required = true)
-    private int person_id;
-
-    @JsonProperty(value = "name", required = true)
-    private String name;
-
+public class PeopleGetModel extends PeopleSearchModel {
     @JsonProperty(value = "gender")
     private String gender;
-
-    @JsonProperty(value = "birthday")
-    private String birthday;
 
     @JsonProperty(value = "deathday")
     private String deathday;
@@ -34,12 +25,6 @@ public class PeopleGetModel {
 
     @JsonProperty(value = "birthplace")
     private String birthplace;
-
-    @JsonProperty(value = "popularity")
-    private Float popularity;
-
-    @JsonProperty(value = "profile_path")
-    private String profile_path;
 
     @JsonCreator
     public PeopleGetModel(@JsonProperty(value = "person_id", required = true) int person_id,
@@ -51,15 +36,11 @@ public class PeopleGetModel {
                           @JsonProperty(value = "birthplace") String birthplace,
                           @JsonProperty(value = "popularity") Float popularity,
                           @JsonProperty(value = "profile_path") String profile_path) {
-        this.person_id = person_id;
-        this.name = name;
+        super(person_id, name, birthday, popularity, profile_path);
         this.gender = gender;
-        this.birthday = birthday;
         this.deathday = deathday;
         this.biography = biography;
         this.birthplace = birthplace;
-        this.popularity = popularity;
-        this.profile_path = profile_path;
     }
 
     /**
@@ -69,32 +50,15 @@ public class PeopleGetModel {
      * @param personModel Object modeling an entire row of the movie table in the database
      */
     public PeopleGetModel(PersonModel personModel) {
-        this.person_id = personModel.getPerson_id();
-        this.name = personModel.getName();
+        super(personModel.getPerson_id(), personModel.getName(), personModel.getBirthday(), personModel.getPopularity(), personModel.getProfile_path());
         this.gender = personModel.getGender();
-        this.birthday = personModel.getBirthday();
         this.deathday = personModel.getDeathday();
         this.biography = personModel.getBiography();
         this.birthplace = personModel.getBirthplace();
-        this.popularity = personModel.getPopularity();
-        this.profile_path = personModel.getProfile_path();
-    }
-
-    @JsonProperty(value = "person_id")
-    public int getPerson_id() {
-        return person_id;
-    }
-
-    @JsonProperty(value = "name")
-    public String getName() {
-        return name;
     }
 
     @JsonProperty(value = "gender")
     public String getGender() { return gender; }
-
-    @JsonProperty(value = "birthday")
-    public String getBirthday() { return birthday; }
 
     @JsonProperty(value = "deathday")
     public String getDeathday() { return deathday; }
@@ -104,10 +68,4 @@ public class PeopleGetModel {
 
     @JsonProperty(value = "birthplace")
     public String getBirthplace() { return birthplace; }
-
-    @JsonProperty(value = "popularity")
-    public Float getPopularity() { return popularity; }
-
-    @JsonProperty(value = "profile_path")
-    public String getProfile_path() { return profile_path; }
 }

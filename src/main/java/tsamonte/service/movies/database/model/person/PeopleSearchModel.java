@@ -42,6 +42,20 @@ public class PeopleSearchModel {
         this.profile_path = profile_path;
     }
 
+    /**
+     * Instead of taking fields directly, this constructor will take an entire PersonModel object, which models
+     * the person table of the database. This constructor will extract the necessary response fields
+     *
+     * @param personModel Object modeling an entire row of the movie table in the database
+     */
+    public PeopleSearchModel(PersonModel personModel) {
+        this.person_id = personModel.getPerson_id();
+        this.name = personModel.getName();
+        this.birthday = personModel.getBirthday();
+        this.popularity = personModel.getPopularity();
+        this.profile_path = personModel.getProfile_path();
+    }
+
     @JsonProperty(value = "person_id")
     public int getPerson_id() {
         return person_id;
