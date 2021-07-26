@@ -17,6 +17,9 @@ The Movie Data API is the second of three microservices that make up the backend
 ## Getting Started
 
 ### Prerequisites
+This API requires an instance of the [Identity Management API](https://github.com/tsamonte/MyMDB-Microservice1-Identity_Management_API) to be run. Refer to the following repository to find directions on how to set up that project first:
+[Identity Management API](https://github.com/tsamonte/MyMDB-Microservice1-Identity_Management_API)
+
 To run this project locally, you must be able to run [JDK 8](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) Java Projects, as well as have a MySQL database to connect to the backend. A [local MySQL database](https://www.mysql.com/downloads/) instance would suffice.
 
 
