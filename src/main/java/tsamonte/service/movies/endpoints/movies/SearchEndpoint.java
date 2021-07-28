@@ -64,7 +64,7 @@ public class SearchEndpoint {
 
         try {
             // Call /api/idm/privilege from Identity Management API
-            PrivilegeResponseModel privilegeResponse = IdmCaller.callIDMPrivilege(headers.getHeaderString("email"));
+            PrivilegeResponseModel privilegeResponse = IdmCaller.callIDMPrivilege(headers.getHeaderString("email"), 4);
 
             // if user has insufficient privilege or user is not found, hidden should always be null; else, keep the original value of hidden
             if (privilegeResponse.getResultCode() == PrivilegeResponseModel.INSUFFICIENT || privilegeResponse.getResultCode() == PrivilegeResponseModel.NOT_FOUND) {

@@ -60,13 +60,14 @@ public class IdmCaller {
      *  - /api/idm/privilege
      *
      * @param email The email address of the user making the request
+     * @param plevel The privilege level to be checked
      * @return An object modeling the response json received from the privilege endpoint
      */
-    public static PrivilegeResponseModel callIDMPrivilege(String email) {
+    public static PrivilegeResponseModel callIDMPrivilege(String email, int plevel) {
         String servicePath = MoviesService.getIdmConfigs().getScheme() + MoviesService.getIdmConfigs().getHostName() + ":" + MoviesService.getIdmConfigs().getPort() + MoviesService.getIdmConfigs().getPath();
         String endpointPath = MoviesService.getIdmConfigs().getPrivilegePath();
 
-        PrivilegeRequestModel requestModel = new PrivilegeRequestModel(email, 4);
+        PrivilegeRequestModel requestModel = new PrivilegeRequestModel(email, plevel);
 
         PrivilegeResponseModel privilegeResponse = IdmCaller.makePost(servicePath, endpointPath, requestModel);
 
